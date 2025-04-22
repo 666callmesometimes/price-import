@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Import promocji</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Import promocji</h1>
+  <p>Kliknij dowolną komórkę i wklej dane z Excela (Ctrl+V):</p>
+
+  <div class="button-group">
+    <button onclick="exportToCSV()">Eksportuj do CSV</button>
+    <input type="text" id="fromTimeInput" placeholder="Godzina FROM (np. 10:20)">
+    <input type="text" id="toTimeInput" placeholder="Godzina TO (np. 10:30)">
+    <button onclick="applyMassTime()">Ustaw godziny</button>
+  </div>
+
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>sku</th>
+        <th>special_price</th>
+        <th>special_price_from</th>
+        <th>special_price_to</th>
+        <th>import_promo_qty</th>
+        <th>import_promo_qty_use_central_stock</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <div class="button-bottom">
+    <button onclick="addRow()">Dodaj wiersz</button>
+    <button class="delete-all-btn" onclick="deleteAllRows()">Usuń wszystko</button>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>

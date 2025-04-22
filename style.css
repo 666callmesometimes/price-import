@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    background: #fafafa;
+    font-family: 'Noto Sans', sans-serif;
+    font-optical-sizing: auto;
+    padding: 20px;
+}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      min-width: 150px;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    td {
+      background-color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    tr:nth-child(even) td {
+      background-color: #f9f9f9;
+    }
+    td:focus {
+      outline: 2px solid #007BFF;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .button-bottom {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .delete-btn {
+      color: black;
+      border: none;
+      padding: 5px 5px;
+      cursor: pointer;
+      font-family: 'Noto Sans', sans-serif;
+      text-align: center;
+      background-color: #00000000;
+    }
+    .delete-btn:hover {
+        background-color: #00000012;
+        border-radius: 100%;
+    }
+    .delete-all-btn {
+      cursor: pointer;
+    }
+
