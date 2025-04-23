@@ -15,7 +15,17 @@
     <input type="text" id="toTimeInput" placeholder="Godzina TO (np. 10:30)">
     <button onclick="applyMassTime()">Ustaw godziny</button>
   </div>
-
+  <div class="input-group">
+    <div class="input-row">
+      <label for="fromDateInput">Wprowadź datę "Od" dla wszystkich wierszy:</label>
+      <input type="text" id="fromDateInput" placeholder="DD.MM.YYYY">
+    </div>
+    <div class="input-row">
+      <label for="toDateInput">Wprowadź datę "Do" dla wszystkich wierszy:</label>
+      <input type="text" id="toDateInput" placeholder="DD.MM.YYYY">
+    </div>
+    <button onclick="applyMassDate()">Zastosuj daty</button>
+  </div>
   <table id="dataTable">
     <thead>
       <tr>
