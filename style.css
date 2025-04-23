@@ -56,4 +56,21 @@ body {
     .delete-all-btn {
       cursor: pointer;
     }
-
+    .error-row {
+      background-color: #ffaa00 !important;
+    }
+    .error-cell {
+      color: white !important;
+    }
+    
+    /* Style dla zgrupowania kontrolek masowej edycji */
+    .input-group {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .input-row {
+      margin-bottom: 5px;
+    }
