@@ -9,12 +9,14 @@
   <h1>Import promocji</h1>
   <p>Kliknij dowolną komórkę i wklej dane z Excela (Ctrl+V):</p>
 
-  <div class="button-group">
+  <div class="button-group input-group">
+    <div class="input-row">
     <button onclick="exportToCSV()">Eksportuj do CSV</button>
     <input type="text" id="fromTimeInput" placeholder="Godzina FROM (np. 10:20)">
     <input type="text" id="toTimeInput" placeholder="Godzina TO (np. 10:30)">
     <button onclick="applyMassTime()">Ustaw godziny</button>
   </div>
+</div>
   <div class="input-group">
     <div class="input-row">
       <label for="fromDateInput">Wprowadź datę "Od" dla wszystkich wierszy:</label>
