@@ -74,3 +74,12 @@ body {
     .input-row {
       margin-bottom: 5px;
     }
+    .hint {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    #csvFileInput {
+      margin-right: 10px;
+    }

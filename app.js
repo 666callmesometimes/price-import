@@ -503,3 +503,124 @@ function addErrorStyles() {
 
 // Wywołaj funkcję dodającą style po załadowaniu strony
 window.addEventListener('DOMContentLoaded', addErrorStyles);
+
+// Funkcja do importu pliku CSV
+function importFromCSV() {
+  const fileInput = document.getElementById('csvFileInput');
+  
+  if (!fileInput.files || fileInput.files.length === 0) {
+    alert('Proszę wybrać plik CSV do importu.');
+    return;
+  }
+  
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  
+  reader.onload = function(e) {
+    const content = e.target.result;
+    processCSVData(content);
+  };
+  
+  reader.onerror = function() {
+    alert('Wystąpił błąd podczas wczytywania pliku.');
+  };
+  
+  reader.readAsText(file);
+}
+
+// Funkcja przetwarzająca zawartość pliku CSV
+function processCSVData(csvContent) {
+  // Podziel zawartość na wiersze
+  const rows = csvContent.split(/\r?\n/).filter(row => row.trim() !== '');
+  
+  // Usuń pierwszy wiersz (nagłówki)
+  if (rows.length > 0) {
+    rows.shift();
+  }
+  
+  // Jeśli nie ma danych, zakończ
+  if (rows.length === 0) {
+    alert('Plik CSV nie zawiera danych lub zawiera tylko nagłówki.');
+    return;
+  }
+  
+  // Czy chcemy zastąpić istniejące dane czy dodać nowe?
+  const replaceData = confirm('Czy chcesz zastąpić istniejące dane? Kliknij "OK" aby zastąpić lub "Anuluj" aby dodać nowe dane na końcu.');
+  
+  if (replaceData) {
+    // Wyczyść istniejące dane
+    deleteAllRows();
+  }
+  
+  // Tablica do przechowywania dodanych wierszy
+  const addedRows = [];
+  
+  // Przetwórz każdy wiersz CSV
+  rows.forEach(row => {
+    // Obsługa pól w cudzysłowach z przecinkami wewnątrz
+    const values = parseCSVLine(row);
+    
+    // Sprawdź, czy mamy odpowiednią liczbę kolumn
+    if (values.length >= 6) {
+      const newRow = addRow();
+      
+      // Uzupełnij dane w wierszu
+      for (let i = 0; i < 6; i++) {
+        // Usuń cudzysłowy, jeśli istnieją
+        let value = values[i].replace(/^"(.*)"$/, '$1');
+        
+        // Dla kolumn z cenami i datami, możemy dodać konwersję formatu jeśli potrzeba
+        if (i === 1) { // special_price
+          // Opcjonalna konwersja formatu ceny - na razie bez zmian
+        } else if (i === 2 || i === 3) { // dates
+          // Opcjonalna konwersja formatu daty - na razie bez zmian
+        }
+        
+        newRow.cells[i].textContent = value;
+      }
+      
+      addedRows.push(newRow);
+    }
+  });
+  
+  // Sprawdź wszystkie wiersze pod kątem poprawności
+  validateAllRows();
+  fixPromoQty();
+  saveToStorage();
+  
+  alert(`Zaimportowano ${addedRows.length} wierszy z pliku CSV.`);
+}
+
+// Funkcja do parsowania linii CSV z uwzględnieniem cudzysłowów
+function parseCSVLine(line) {
+  const result = [];
+  let currentValue = '';
+  let insideQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      if (insideQuotes && i + 1 < line.length && line[i + 1] === '"') {
+        // Podwójny cudzysłów wewnątrz pola w cudzysłowach - dodaj jeden cudzysłów
+        currentValue += '"';
+        i++; // Przejdź do następnego znaku
+      } else {
+        // Przełącz stan "wewnątrz cudzysłowów"
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === ',' && !insideQuotes) {
+      // Koniec pola (przecinek poza cudzysłowami)
+      result.push(currentValue);
+      currentValue = '';
+    } else {
+      // Zwykły znak - dodaj do bieżącej wartości
+      currentValue += char;
+    }
+  }
+  
+  // Dodaj ostatnie pole
+  result.push(currentValue);
+  
+  return result;
+}
