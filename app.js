@@ -81,6 +81,15 @@ function isValidTime(timeStr) {
   return timeRegex.test(timeStr);
 }
 
+function formatTime(timeStr) {
+  // Upewnij się, że godziny przed 12:00 są uzupełnione zerem
+  if (isValidTime(timeStr)) {
+    const [hours, minutes] = timeStr.split(':');
+    return hours.padStart(2, '0') + ':' + minutes;
+  }
+  return timeStr;
+}
+
 function validateDateTimeCell(cell) {
   const row = cell.parentElement;
   const value = cell.textContent.trim();
@@ -221,6 +230,9 @@ function formatDateForCSV(dateStr) {
       } else {
         time = '00:00'; // Domyślny czas, jeśli nie można naprawić
       }
+    } else {
+      // Upewnij się, że godzina jest uzupełniona zerem z przodu
+      time = formatTime(time);
     }
     
     // Usuń czas z daty do przetworzenia
@@ -258,8 +270,8 @@ function formatDateForCSV(dateStr) {
       }
     }
     
-    // Zostaw tylko 2 ostatnie cyfry roku
-    year = match[3].slice(2);
+    // Użyj pełnego roku zamiast tylko 2 ostatnich cyfr
+    year = match[3];
     
     return `${year}-${month}-${day}${time ? ' ' + time : ''}`;
   }
@@ -271,13 +283,13 @@ function formatDateForCSV(dateStr) {
     
     // Sprawdź czy pierwszy segment to rok (jeśli to 25)
     if (first === 25) {
-      year = match[1];
+      year = "20" + match[1]; // Dodajemy "20" do roku
       month = match[2].padStart(2, '0');
       day = parseInt(match[3], 10).toString().padStart(2, '0');
     } else {
       day = parseInt(match[1], 10).toString().padStart(2, '0');
       month = match[2].padStart(2, '0');
-      year = match[3];
+      year = "20" + match[3]; // Dodajemy "20" do roku
     }
     
     return `${year}-${month}-${day}${time ? ' ' + time : ''}`;
@@ -289,7 +301,7 @@ function formatDateForCSV(dateStr) {
     day = parseInt(match[1], 10).toString().padStart(2, '0');
     month = match[2].padStart(2, '0');
     year = match[3];
-    if (year.length === 4) year = year.slice(2); // Zostaw tylko 2 ostatnie cyfry roku
+    if (year.length === 2) year = "20" + year; // Dodajemy "20" jeśli rok jest dwucyfrowy
     
     return `${year}-${month}-${day}${time ? ' ' + time : ''}`;
   }
@@ -314,11 +326,15 @@ function applyMassTime() {
     return;
   }
   
+  // Formatowanie czasu z dopełnieniem zerami
+  const formattedFromTime = fromTime ? formatTime(fromTime) : '';
+  const formattedToTime = toTime ? formatTime(toTime) : '';
+  
   const tbody = table.querySelector('tbody');
 
   for (let row of tbody.rows) {
     // Obsługa komórki FROM
-    if (fromTime && fromTime.match(/^\d{1,2}:\d{2}$/)) {
+    if (formattedFromTime && formattedFromTime.match(/^\d{2}:\d{2}$/)) {
       let cell = row.cells[2];
       let content = cell.textContent.trim();
       
@@ -326,16 +342,16 @@ function applyMassTime() {
         // Sprawdź czy data zawiera już godzinę
         if (content.match(/\d{1,2}:\d{1,}$/)) {
           // Jeśli zawiera godzinę, zastąp ją nową (używając regexp do wyłapania tylko poprawnej części godzinowej)
-          cell.textContent = content.replace(/\d{1,2}:\d{1,}$/, fromTime);
+          cell.textContent = content.replace(/\d{1,2}:\d{1,}$/, formattedFromTime);
         } else {
           // Jeśli nie zawiera godziny, dodaj ją
-          cell.textContent = content + ' ' + fromTime;
+          cell.textContent = content + ' ' + formattedFromTime;
         }
       }
     }
     
     // Obsługa komórki TO
-    if (toTime && toTime.match(/^\d{1,2}:\d{2}$/)) {
+    if (formattedToTime && formattedToTime.match(/^\d{2}:\d{2}$/)) {
       let cell = row.cells[3];
       let content = cell.textContent.trim();
       
@@ -343,10 +359,10 @@ function applyMassTime() {
         // Sprawdź czy data zawiera już godzinę
         if (content.match(/\d{1,2}:\d{1,}$/)) {
           // Jeśli zawiera godzinę, zastąp ją nową
-          cell.textContent = content.replace(/\d{1,2}:\d{1,}$/, toTime);
+          cell.textContent = content.replace(/\d{1,2}:\d{1,}$/, formattedToTime);
         } else {
           // Jeśli nie zawiera godziny, dodaj ją
-          cell.textContent = content + ' ' + toTime;
+          cell.textContent = content + ' ' + formattedToTime;
         }
       }
     }
@@ -386,7 +402,7 @@ function applyMassDate() {
         let timeStr = '';
         const timeMatch = content.match(/\s(\d{1,2}:\d{2})$/);
         if (timeMatch) {
-          timeStr = ' ' + timeMatch[1];
+          timeStr = ' ' + formatTime(timeMatch[1]); // Formatuj czas z dopełnieniem zerami
         }
         
         // Ustaw nową datę z zachowaniem godziny
@@ -404,7 +420,7 @@ function applyMassDate() {
         let timeStr = '';
         const timeMatch = content.match(/\s(\d{1,2}:\d{2})$/);
         if (timeMatch) {
-          timeStr = ' ' + timeMatch[1];
+          timeStr = ' ' + formatTime(timeMatch[1]); // Formatuj czas z dopełnieniem zerami
         }
         
         // Ustaw nową datę z zachowaniem godziny
