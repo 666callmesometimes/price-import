@@ -61,10 +61,13 @@ function deleteAllRows() {
 function fixSinglePromoQty(cell) {
   const row = cell.parentElement;
   const value = cell.textContent.trim();
-  if (value === '' || value === '0' || value.toLowerCase() === 'null') {
-    cell.textContent = '99';
+  
+  // MODIFIED: Only set auto-values when the value is specifically "99"
+  if (value === '99') {
     row.cells[5].textContent = '1';
   }
+  // Don't auto-set value for empty fields or other values
+  
   saveToStorage();
 }
 
@@ -338,6 +341,7 @@ function applyMassTime() {
       let cell = row.cells[2];
       let content = cell.textContent.trim();
       
+      // MODIFIED: Add time to empty cells too
       if (content !== '') {
         // Sprawdź czy data zawiera już godzinę
         if (content.match(/\d{1,2}:\d{1,}$/)) {
@@ -347,6 +351,13 @@ function applyMassTime() {
           // Jeśli nie zawiera godziny, dodaj ją
           cell.textContent = content + ' ' + formattedFromTime;
         }
+      } else {
+        // Add time to empty cell - use current date
+        const today = new Date();
+        const dateStr = today.getDate().toString().padStart(2, '0') + '.' + 
+                       (today.getMonth() + 1).toString().padStart(2, '0') + '.' + 
+                       today.getFullYear();
+        cell.textContent = dateStr + ' ' + formattedFromTime;
       }
     }
     
@@ -355,6 +366,7 @@ function applyMassTime() {
       let cell = row.cells[3];
       let content = cell.textContent.trim();
       
+      // MODIFIED: Add time to empty cells too
       if (content !== '') {
         // Sprawdź czy data zawiera już godzinę
         if (content.match(/\d{1,2}:\d{1,}$/)) {
@@ -364,6 +376,13 @@ function applyMassTime() {
           // Jeśli nie zawiera godziny, dodaj ją
           cell.textContent = content + ' ' + formattedToTime;
         }
+      } else {
+        // Add time to empty cell - use current date
+        const today = new Date();
+        const dateStr = today.getDate().toString().padStart(2, '0') + '.' + 
+                       (today.getMonth() + 1).toString().padStart(2, '0') + '.' + 
+                       today.getFullYear();
+        cell.textContent = dateStr + ' ' + formattedToTime;
       }
     }
   }
@@ -397,17 +416,18 @@ function applyMassDate() {
       let cell = row.cells[2];
       let content = cell.textContent.trim();
       
+      // MODIFIED: Allow setting date in empty cells too
+      // Zachowaj tylko część godzinową, jeśli istnieje
+      let timeStr = '';
       if (content !== '') {
-        // Zachowaj tylko część godzinową, jeśli istnieje
-        let timeStr = '';
         const timeMatch = content.match(/\s(\d{1,2}:\d{2})$/);
         if (timeMatch) {
           timeStr = ' ' + formatTime(timeMatch[1]); // Formatuj czas z dopełnieniem zerami
         }
-        
-        // Ustaw nową datę z zachowaniem godziny
-        cell.textContent = fromDate + timeStr;
       }
+      
+      // Ustaw nową datę z zachowaniem godziny
+      cell.textContent = fromDate + timeStr;
     }
     
     // Obsługa komórki TO
@@ -415,17 +435,18 @@ function applyMassDate() {
       let cell = row.cells[3];
       let content = cell.textContent.trim();
       
+      // MODIFIED: Allow setting date in empty cells too
+      // Zachowaj tylko część godzinową, jeśli istnieje
+      let timeStr = '';
       if (content !== '') {
-        // Zachowaj tylko część godzinową, jeśli istnieje
-        let timeStr = '';
         const timeMatch = content.match(/\s(\d{1,2}:\d{2})$/);
         if (timeMatch) {
           timeStr = ' ' + formatTime(timeMatch[1]); // Formatuj czas z dopełnieniem zerami
         }
-        
-        // Ustaw nową datę z zachowaniem godziny
-        cell.textContent = toDate + timeStr;
       }
+      
+      // Ustaw nową datę z zachowaniem godziny
+      cell.textContent = toDate + timeStr;
     }
   }
   
