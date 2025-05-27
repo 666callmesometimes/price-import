@@ -524,20 +524,6 @@ function loadFromStorage() {
   });
 }
 
-// Dodaj style CSS dla oznaczania błędów
-function addErrorStyles() {
-  const style = document.createElement('style');
-  style.textContent = `
-    .error-row {
-      background-color: #ffaa00 !important;
-    }
-    .error-cell {
-      color: white !important;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
 // Wywołaj funkcję dodającą style po załadowaniu strony
 window.addEventListener('DOMContentLoaded', addErrorStyles);
 
